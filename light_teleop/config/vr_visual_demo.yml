@@ -81,7 +81,7 @@ camera_orientation_cost: 0.12
 duration: 300
 
 # IK 主循环频率，单位 Hz。
-frequency: 60
+frequency: 80
 
 # 手柄位移到机器人末端位移的缩放系数。
 scale: 1.0

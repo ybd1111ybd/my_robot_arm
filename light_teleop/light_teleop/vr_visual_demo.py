@@ -607,40 +607,6 @@ def make_loop_timing(frequency: float, duration: float) -> LoopTiming:
     )
 
 
-def estimate_vr_packet_frequency(
-    receiver: UdpReceiver,
-    sample_seconds: float,
-    timeout_ms: int,
-    min_packets: int,
-    fallback_frequency: float,
-) -> float:
-    if sample_seconds <= 0.0:
-        raise ValueError("--vr-frequency-sample-seconds must be positive")
-    if min_packets < 2:
-        raise ValueError("--vr-frequency-min-packets must be at least 2")
-
-    timestamps: list[float] = []
-    deadline = time.monotonic() + sample_seconds
-    while time.monotonic() < deadline or len(timestamps) < min_packets:
-        datagram = receiver.receive_once(timeout_ms)
-        if datagram is None:
-            if time.monotonic() >= deadline:
-                break
-            continue
-        packet = VrDataParser.parse(datagram.data)
-        if packet is None or not packet.has_vr_device_poses or not packet.has_controller_inputs:
-            continue
-        timestamps.append(time.monotonic())
-
-    if len(timestamps) < 2:
-        return fallback_frequency
-    intervals = np.diff(np.array(timestamps, dtype=float))
-    intervals = intervals[intervals > 0.0]
-    if len(intervals) == 0:
-        return fallback_frequency
-    return 1.0 / float(np.median(intervals))
-
-
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, parents=[config_parser()])
     parser.add_argument("--host", default="10.1.42.3", help="local UDP bind IP")
@@ -752,23 +718,6 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--duration", type=float, default=300.0)
     parser.add_argument("--frequency", type=float, default=60.0)
-    parser.add_argument(
-        "--match-vr-frequency",
-        action="store_true",
-        help="Estimate VR UDP packet frequency at startup and use it as the IK loop frequency.",
-    )
-    parser.add_argument(
-        "--vr-frequency-sample-seconds",
-        type=float,
-        default=1.0,
-        help="Seconds used to estimate VR packet frequency when --match-vr-frequency is enabled.",
-    )
-    parser.add_argument(
-        "--vr-frequency-min-packets",
-        type=int,
-        default=10,
-        help="Minimum valid packets required while estimating VR frequency.",
-    )
     parser.add_argument(
         "--display-every",
         type=int,
@@ -1009,12 +958,6 @@ def main(argv: list[str] | None = None) -> int:
     log(f"[vr_visual_demo] Meshcat URL: {visualizer.url()}")
     log(f"[vr_visual_demo] listening on udp://{args.host}:{args.port}")
     log(f"[vr_visual_demo] solver_frequency: {loop_timing.frequency:g} Hz dt={loop_timing.dt:.6f}s")
-    if args.match_vr_frequency:
-        log(
-            "[vr_visual_demo] match_vr_frequency: enabled "
-            f"sample_seconds={args.vr_frequency_sample_seconds:g} "
-            f"min_packets={args.vr_frequency_min_packets}"
-        )
     log("[vr_visual_demo] hold Grip to move, release Grip to hold, press X/A to reset home")
     log(f"[vr_visual_demo] posture_cost_profile: {args.posture_cost_profile}")
     log(
@@ -1065,22 +1008,6 @@ def main(argv: list[str] | None = None) -> int:
     result = solver._make_result()
     try:
         with UdpReceiver(args.host, args.port) as receiver:
-            if args.match_vr_frequency:
-                estimated_frequency = estimate_vr_packet_frequency(
-                    receiver,
-                    args.vr_frequency_sample_seconds,
-                    args.udp_timeout_ms,
-                    args.vr_frequency_min_packets,
-                    loop_timing.frequency,
-                )
-                loop_timing = make_loop_timing(estimated_frequency, args.duration)
-                dt = loop_timing.dt
-                steps = loop_timing.steps
-                start = time.monotonic()
-                log(
-                    "[vr_visual_demo] solver_frequency matched to VR: "
-                    f"{loop_timing.frequency:.2f} Hz dt={loop_timing.dt:.6f}s"
-                )
             for step_index in range(steps):
                 loop_start = time.monotonic()
                 datagram, drained_count = receiver.receive_latest(
