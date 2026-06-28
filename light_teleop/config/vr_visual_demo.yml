@@ -1,0 +1,135 @@
+# VR 可视化遥操作 demo 默认参数。
+# 运行时会先读取本文件，再让命令行参数覆盖这里的值。
+
+# 本机 UDP 绑定地址；需要和 VR 数据发送端的目标地址一致。
+host: 10.1.42.44
+
+# VR UDP 端口；需要和 VR 数据发送端端口一致。
+port: 8080
+
+# 每帧接收 UDP 的超时时间，单位毫秒；越小越不阻塞 IK 循环。
+udp_timeout_ms: 1
+
+# 每个 IK 帧最多清空多少个 UDP 包，只使用最新包；增大可减少网络积压。
+max_packets_per_frame: 128
+
+# 机器人 URDF 路径；相对路径会按 /home/luzhuang/cqy/my_robot 项目根目录解析。
+urdf: jz_descripetion-main/robot_urdf/urdf/robot urdf.10.8.SLDASM.urdf
+
+# URDF 里 package:// 资源的根目录；相对路径会按项目根目录解析。
+package_dir: jz_descripetion-main/robot_urdf
+
+# 左臂 IK 控制的末端 frame；当前使用法兰盘/工具基座。
+left_ee_frame: left_arm_link9
+
+# 右臂 IK 控制的末端 frame；当前使用法兰盘/工具基座。
+right_ee_frame: right_arm_link9
+
+# QP 求解器名称；null 表示自动选择当前环境可用的求解器。
+solver: null
+
+# 初始姿态；vr-pregrasp 是当前 VR 预抓取姿态。
+home: vr-pregrasp
+
+# Pink posture task 基础权重；越大越倾向保持 home 关节姿态。
+posture_cost: 0.1
+
+# posture task 的分关节权重策略：
+# joint7-priority 保持第七轴最灵活，适合腕部上下已经 OK、整体较稳的情况。
+# joint6-priority 保持第六轴最灵活，适合左右腕部不够灵活时优先尝试。
+# wrist-cross-priority 同时放松第六轴和第七轴，让第六轴更愿意承担腕部左右运动。
+# wrist-free 会更放开腕部，但也更容易让手腕姿态飘，需要谨慎。
+posture_cost_profile: joint6-priority
+
+# 末端位置跟踪权重；越大越强追位置，越小越让姿态/姿态保持有更多空间。
+position_cost: 0.55
+
+# 末端姿态跟踪权重；越大越鼓励 wrist/link6/link7 追姿态。
+orientation_cost: 0.35
+
+# target 姿态模式：
+# locked 锁定 Grip 绑定时的末端姿态，比较稳但 link6/link7 基本不跟随手柄姿态。
+# wrist-decoupled 将手柄相对旋转拆成两个腕部通道，但会锁住局部 z 轴自转。
+# swing 只跟随工具轴摆动，允许上下/左右腕部运动，但上下倾斜可能影响左右灵敏度。
+# vr 完整跟随 VR 手柄姿态，包括局部 z 轴自转。
+target_orientation_mode: vr
+
+# wrist-decoupled 模式下，左右通道增益；主要驱动 link6/joint6。
+# 如果左右方向反了，改这个符号；当前设为 -1.0 是为了让“往内拐”的方向和 link6 显示一致。
+wrist_left_right_gain: -1.3
+
+# wrist-decoupled 模式下，上下通道增益；主要驱动 link7/joint7。
+wrist_up_down_gain: 1.3
+
+# wrist-decoupled 模式下，单个腕部通道最大目标角度，单位弧度；0.85 rad 约 49 度。
+wrist_max_angle: 0.85
+
+# 真正受控的 TCP 点相对 left/right_ee_frame 的本地偏移距离，单位米。
+# 设为 0 时控制所选末端 frame 原点；设为 0.10 时控制沿本地 z 轴前方 10 cm 的真实末端点。
+tcp_control_offset: 0.0
+
+# TCP 控制点偏移使用的本地轴；这里和 debug 方块的 z 轴前移保持一致。
+tcp_control_offset_axis: z
+
+# 是否额外稳定 left_arm_link10/right_arm_link10 的相机/挂载点姿态。
+stabilize_camera: false
+
+# 相机/挂载点姿态稳定任务的权重；越大越不容易让 link10 姿态乱飘。
+camera_orientation_cost: 0.12
+
+# demo 运行时长，单位秒。
+duration: 300
+
+# IK 主循环频率，单位 Hz。
+frequency: 60
+
+# 手柄位移到机器人末端位移的缩放系数。
+scale: 1.0
+
+# VR 坐标轴到机器人坐标轴的映射；负号表示反向，1/2/3 分别表示 x/y/z。
+axis_mapping: [-2, 3, 1]
+
+# target 平移限速，单位 m/s；0 表示关闭限速。
+target_max_speed: 0.8
+
+# 每隔多少个 IK 帧更新一次 Meshcat 显示；2 可以降低显示压力。
+display_every: 2
+
+# 每收到多少个有效 VR 包打印一次状态。
+print_every: 30
+
+# 启动时是否自动打开 Meshcat 浏览器页面。
+open_browser: false
+
+# 是否完全不加载 mesh，只显示骨架/坐标系/target。
+no_meshes: false
+
+# 是否只加载双臂 mesh，隐藏身体等其它 mesh。
+arm_meshes_only: true
+
+# 是否显示 VR debug marker，包括原始手柄球、映射方块、发送方块和绑定原点。
+show_vr_debug: true
+
+# 原始 VR 手柄小球在 Meshcat 世界里的显示原点。
+vr_debug_origin: [-0.65, 0.0, 0.15]
+
+# 原始 VR 手柄小球显示时的缩放系数；只影响 debug 小视图，不影响控制。
+vr_debug_scale: 0.35
+
+# debug target 方块沿本地轴偏移的距离，单位米；0 表示显示方块和真实控制目标重合。
+vr_debug_target_forward_offset: 0.0
+
+# debug target 方块偏移使用的本地轴；z 通常对应 Meshcat 的蓝色轴。
+vr_debug_target_offset_axis: z
+
+# 运行日志输出路径；相对路径会按当前运行目录解析，每次启动会覆盖该文件。
+log_file: light_teleop/light_teleop/logs/vr_visual_demo.log
+
+# VR pose 平滑器类型；moving_avg 是当前默认的滑动平均。
+smoother_type: moving_avg
+
+# 位置指数平滑系数；越大越跟手，越小越平滑。
+position_alpha: 0.25
+
+# 姿态 SLERP 平滑系数；越大越跟手，越小越平滑。
+rotation_alpha: 0.75

@@ -1,0 +1,4 @@
+pin-pink
+numpy
+meshcat
+meshcat-shapes

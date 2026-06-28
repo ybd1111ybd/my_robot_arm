@@ -1,0 +1,159 @@
+# ============================================
+# ROS2 / Colcon Build 产物
+# ============================================
+build/
+install/
+/log/
+
+# ============================================
+# C++ 编译产物
+# ============================================
+*.o
+*.so
+*.a
+*.exe
+*.out
+*.app
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# ============================================
+# Python 缓存
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg
+
+# ============================================
+# IDE 和编辑器配置文件
+# ============================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# CLion / PyCharm / IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+cmake-build-*/
+
+# Eclipse
+.project
+.cproject
+.settings/
+
+# QtCreator
+CMakeLists.txt.user*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw?
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================
+# 操作系统文件
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================
+# 日志和临时文件
+# ============================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# ============================================
+# 调试和性能分析
+# ============================================
+*.dSYM/
+*.su
+*.idb
+*.pdb
+callgrind.out.*
+perf.data
+perf.data.old
+gmon.out
+vgcore.*
+
+# ============================================
+# 测试和覆盖率
+# ============================================
+*.gcda
+*.gcno
+*.gcov
+coverage/
+htmlcov/
+.coverage
+.coverage.*
+
+# ============================================
+# 文档生成
+# ============================================
+doc/html/
+doc/latex/
+doxygen/
+*.pdf
+
+# ============================================
+# 包管理
+# ============================================
+*.deb
+*.rpm
+
+# ============================================
+# 其他
+# ============================================
+.catkin_workspace
+CATKIN_IGNORE
+*.bag
+*.bag.active

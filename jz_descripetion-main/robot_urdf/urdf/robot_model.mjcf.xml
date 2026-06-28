@@ -1,0 +1,455 @@
+<mujoco model="dual_arm_robot">
+    <compiler angle="radian" meshdir="../meshes/"/>
+
+    <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast" iterations="100" solver="Newton" tolerance="1e-8"/>
+
+    <visual>
+        <global offwidth="1920" offheight="1080"/>
+        <quality shadowsize="4096"/>
+    </visual>
+
+    <default>
+        <joint armature="10" damping="100" limited="true" frictionloss="1"/>
+        <geom condim="4" friction="1 0.5 0.5" margin="0.001"/>
+        <default class="visual_geom">
+            <geom contype="0" conaffinity="0"/>
+        </default>
+        <default class="collision_geom">
+            <geom group="3" rgba="1 1 1 0"/>
+        </default>
+        <motor ctrllimited="true" ctrlrange="-500 500"/>
+    </default>
+
+    <asset>
+        <!-- Visual meshes -->
+        <mesh name="base_visual" file="visual/base_link.STL"/>
+        <mesh name="body3_visual" file="visual/body3_link.STL"/>
+        <mesh name="body2_visual" file="visual/body2_link.STL"/>
+        <mesh name="body1_visual" file="visual/body1_link.STL"/>
+        <mesh name="hand2_visual" file="visual/hand2_link.STL"/>
+        <mesh name="hand1_visual" file="visual/hand1_link.STL"/>
+
+        <mesh name="left_arm1_visual" file="visual/left_arm_link1.STL"/>
+        <mesh name="left_arm2_visual" file="visual/left_arm_link2.STL"/>
+        <mesh name="left_arm3_visual" file="visual/left_arm_link3.STL"/>
+        <mesh name="left_arm4_visual" file="visual/left_arm_link4.STL"/>
+        <mesh name="left_arm5_visual" file="visual/left_arm_link5.STL"/>
+        <mesh name="left_arm6_visual" file="visual/left_arm_link6.STL"/>
+        <mesh name="left_arm7_visual" file="visual/left_arm_link7.STL"/>
+        <mesh name="left_arm8_visual" file="visual/left_arm_link8.STL"/>
+        <mesh name="left_arm9_visual" file="visual/left_arm_link9.STL"/>
+        <mesh name="left_arm10_visual" file="visual/left_arm_link10.STL"/>
+
+        <mesh name="right_arm1_visual" file="visual/right_arm_link1.STL"/>
+        <mesh name="right_arm2_visual" file="visual/right_arm_link2.STL"/>
+        <mesh name="right_arm3_visual" file="visual/right_arm_link3.STL"/>
+        <mesh name="right_arm4_visual" file="visual/right_arm_link4.STL"/>
+        <mesh name="right_arm5_visual" file="visual/right_arm_link5.STL"/>
+        <mesh name="right_arm6_visual" file="visual/right_arm_link6.STL"/>
+        <mesh name="right_arm7_visual" file="visual/right_arm_link7.STL"/>
+        <mesh name="right_arm8_visual" file="visual/right_arm_link8.STL"/>
+        <mesh name="right_arm9_visual" file="visual/right_arm_link9.STL"/>
+        <mesh name="right_arm10_visual" file="visual/right_arm_link10.STL"/>
+
+        <!-- Collision meshes -->
+        <mesh name="base_collision" file="collision/base_link.STL"/>
+        <mesh name="body3_collision" file="collision/body3_link.STL"/>
+        <mesh name="body2_collision" file="collision/body2_link.STL"/>
+        <mesh name="body1_collision" file="collision/body1_link.STL"/>
+        <mesh name="hand2_collision" file="collision/hand2_link.STL"/>
+        <mesh name="hand1_collision" file="collision/hand1_link.STL"/>
+
+        <mesh name="left_arm1_collision" file="collision/left_arm_link1.STL"/>
+        <mesh name="left_arm2_collision" file="collision/left_arm_link2.STL"/>
+        <mesh name="left_arm3_collision" file="collision/left_arm_link3.STL"/>
+        <mesh name="left_arm4_collision" file="collision/left_arm_link4.STL"/>
+        <mesh name="left_arm5_collision" file="collision/left_arm_link5.STL"/>
+        <mesh name="left_arm6_collision" file="collision/left_arm_link6.STL"/>
+        <mesh name="left_arm7_collision" file="collision/left_arm_link7.STL"/>
+        <mesh name="left_arm8_collision" file="collision/left_arm_link8.STL"/>
+        <mesh name="left_arm9_collision" file="collision/left_arm_link9.STL"/>
+        <mesh name="left_arm10_collision" file="collision/left_arm_link10.STL"/>
+
+        <mesh name="right_arm1_collision" file="collision/right_arm_link1.STL"/>
+        <mesh name="right_arm2_collision" file="collision/right_arm_link2.STL"/>
+        <mesh name="right_arm3_collision" file="collision/right_arm_link3.STL"/>
+        <mesh name="right_arm4_collision" file="collision/right_arm_link4.STL"/>
+        <mesh name="right_arm5_collision" file="collision/right_arm_link5.STL"/>
+        <mesh name="right_arm6_collision" file="collision/right_arm_link6.STL"/>
+        <mesh name="right_arm7_collision" file="collision/right_arm_link7.STL"/>
+        <mesh name="right_arm8_collision" file="collision/right_arm_link8.STL"/>
+        <mesh name="right_arm9_collision" file="collision/right_arm_link9.STL"/>
+        <mesh name="right_arm10_collision" file="collision/right_arm_link10.STL"/>
+
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+        <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+    </asset>
+
+    <keyframe>
+        <!-- Home position: all joints at zero -->
+        <key name="home"
+             qpos="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+             qvel="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+             ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>
+
+        <!-- Teleop startup pose: wrist joints rotated so the hand cameras point upward -->
+        <key name="teleop_home"
+             time="762.896"
+             qpos="0 0 0 0 0 0 -1.34061 0 -1.48194 1.3826 0 0 0 1.34061 0 1.43716 -1.3826 0 0"
+             qvel="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+             ctrl="0 0 0 0 0 0 -1.34061 0 -1.48194 1.3826 0 0 0 1.34061 0 1.43716 -1.3826 0 0"/>
+    </keyframe>
+
+    <worldbody>
+        <!-- Camera looking at robot -->
+        <camera name="main_cam" pos="2 -2 1.5" quat="0.5 0.5 0.5 0.5"/>
+        <camera name="front" pos="2 0 1" xyaxes="0 1 0 0 0 1"/>
+        <camera name="side" pos="0 2 1" xyaxes="-1 0 0 0 0 1"/>
+
+        <light pos="0 0 5" dir="0 0 -1" directional="true"/>
+        <light pos="2 2 3" dir="-0.5 -0.5 -1"/>
+        <geom name="floor" pos="0 0 0" size="5 5 0.1" type="plane" material="groundplane"/>
+
+        <!-- IK target markers (updated by mujoco_sim_node callbacks) -->
+        <body name="left_target_marker" mocap="true" pos="0.68 0.42 1.12">
+            <!-- target_pose 是 link8 姿态；marker 长轴表示 link8 -> link14 的握持方向。 -->
+            <geom class="visual_geom" name="left_target_geom" type="box"
+                  pos="0 0.030 0"
+                  quat="0.70710678 -0.70710678 0 0"
+                  size="0.014 0.010 0.032"
+                  rgba="1 0.12 0.12 0.50"/>
+            <geom class="visual_geom" name="left_target_nose" type="capsule"
+                  fromto="0 0 0 0 0.118 0"
+                  size="0.0048"
+                  rgba="1 0.30 0.30 0.98"/>
+        </body>
+        <body name="right_target_marker" mocap="true" pos="0.68 -0.42 1.12">
+            <geom class="visual_geom" name="right_target_geom" type="box"
+                  pos="0 -0.030 0"
+                  quat="0.70710678 0.70710678 0 0"
+                  size="0.014 0.010 0.032"
+                  rgba="0.12 0.55 1 0.50"/>
+            <geom class="visual_geom" name="right_target_nose" type="capsule"
+                  fromto="0 0 0 0 -0.118 0"
+                  size="0.0048"
+                  rgba="1 0.30 0.30 0.98"/>
+        </body>
+
+        <!-- Workspace center markers (updated by /arm_* /workspace_center) -->
+        <body name="left_workspace_center_marker" mocap="true" pos="0.2 0.25 0.6">
+            <geom class="visual_geom" name="left_workspace_center_geom" type="sphere" size="0.012" rgba="1 0.55 0.2 0.95"/>
+        </body>
+        <body name="right_workspace_center_marker" mocap="true" pos="0.2 -0.25 0.6">
+            <geom class="visual_geom" name="right_workspace_center_geom" type="sphere" size="0.012" rgba="0.2 1 0.55 0.95"/>
+        </body>
+
+        <!-- Base link (link0) - fixed to world -->
+        <body name="link0" pos="0 0 0.5">
+            <geom class="visual_geom" type="mesh" mesh="base_visual" rgba="0.75 0.75 0.75 1"/>
+            <geom class="collision_geom" type="box" pos="0.065670 0.003475 -0.026748" size="0.322572 0.264930 0.322390"/>
+            <inertial pos="0.0104 -0.0004 0.1597" mass="182.85"
+                      diaginertia="6.378 8.383 13.069"/>
+
+            <!-- Body chain: body3 -> link1 -> body2 -> link2 -> body1 -> link3 -> hand2 -> link4 -> hand1 -> link5 -->
+            <body name="link1" pos="0.0817 -0.083 0.6631">
+                <joint name="body3" type="hinge" axis="0 -1 0" range="-2.094395 2.007129" damping="3000" frictionloss="1"/>
+                <geom class="visual_geom" type="mesh" mesh="body3_visual" rgba="0.75 0.75 0.75 1"/>
+                <geom class="collision_geom" type="box" pos="0.000001 0.001278 -0.001010" size="0.072109 0.110043 0.197059"/>
+                <inertial pos="0.0815 0.0817 0.1411" mass="3.87"
+                          diaginertia="0.041 0.058 0.018"/>
+
+                <body name="link2" pos="0.16 0 0.2771">
+                    <joint name="body2" type="hinge" axis="0 1 0" range="-2.007129 2.094395" damping="3000" frictionloss="1"/>
+                    <geom class="visual_geom" type="mesh" mesh="body2_visual" rgba="0.75 0.75 0.75 1"/>
+                    <geom class="collision_geom" type="box" pos="-0.000818 -0.009780 0.011888" size="0.060645 0.076741 0.090885"/>
+                    <inertial pos="0.0001 0.0758 0.0176" mass="8.43"
+                              diaginertia="0.029 0.030 0.024"/>
+
+                    <body name="link3" pos="0 0.083 0.1245">
+                        <joint name="body1" type="hinge" axis="0 0 1" range="-2.600541 2.600541"/>
+                        <geom class="visual_geom" type="mesh" mesh="body1_visual" rgba="0.75 0.75 0.75 1"/>
+                        <geom class="collision_geom" type="box" pos="0.005451 0.000852 -0.035797" size="0.114144 0.143758 0.213480"/>
+                        <inertial pos="0.0003 0.0003 0.2697" mass="11.79"
+                                  diaginertia="0.083 0.068 0.040"/>
+
+                        <!-- hand2 and link4 -->
+                        <body name="link4" pos="0 0 0.4572">
+                            <joint name="hand2" type="hinge" axis="0 0 1" range="-0.767945 0.767945"/>
+                            <geom class="visual_geom" type="mesh" mesh="hand2_visual" rgba="0.75 0.75 0.75 1"/>
+                            <geom class="collision_geom" type="box" pos="0.000072 0.006927 0.002959" size="0.016067 0.027436 0.031647"/>
+                            <inertial pos="0 0.0063 0.0206" mass="0.079"
+                                      diaginertia="0.00005 0.00003 0.00004"/>
+
+                            <!-- hand1 and link5 -->
+                            <body name="link5" pos="0 -0.03475 0.05">
+                                <joint name="hand1" type="hinge" axis="0 1 0" range="-2.775074 2.775074"/>
+                                <geom class="visual_geom" type="mesh" mesh="hand1_visual" rgba="0.75 0.75 0.75 1"/>
+                                <geom class="collision_geom" type="box" pos="0.000036 0.003629 -0.023173" size="0.061963 0.079307 0.103886"/>
+                                <inertial pos="0.7415 0.0347 -0.053" mass="15.85"
+                                          diaginertia="2.51 1.68 2.06"/>
+                            </body>
+                        </body>
+
+                        <!-- Left arm chain from link3 -->
+                        <body name="link6l" pos="0 0.14 0.3872">
+                            <joint name="left_arm1" type="hinge" axis="0 1 0" range="-3.141593 1.570796"/>
+                            <geom class="visual_geom" type="mesh" mesh="left_arm1_visual" rgba="0.75 0.75 0.75 1"/>
+                            <geom class="collision_geom" type="box" pos="-0.000205 -0.001155 0.015855" size="0.039620 0.049465 0.059874"/>
+                            <inertial pos="0.0059 0.0939 0.0003" mass="2.43"
+                                      diaginertia="0.0038 0.0035 0.0044"/>
+
+                            <body name="link7l" pos="0.063 0.1 0">
+                                <joint name="left_arm2" type="hinge" axis="1 0 0" range="-1.605703 1.37881"/>
+                                <geom class="visual_geom" type="mesh" mesh="left_arm2_visual" rgba="0.75 0.75 0.75 1"/>
+                                <geom class="collision_geom" type="box" pos="0.004338 0.008038 0.000522" size="0.046158 0.058746 0.063246"/>
+                                <inertial pos="-0.0602 0.0405 -0.0002" mass="0.66"
+                                          diaginertia="0.0016 0.002 0.0022"/>
+
+                                <body name="link8l" pos="-0.063 0.092 0" euler="1.5708 0 0">
+                                    <joint name="left_arm3" type="hinge" axis="0 0 -1" range="-2.792527 2.792527"/>
+                                    <geom class="visual_geom" type="mesh" mesh="left_arm3_visual" rgba="0.75 0.75 0.75 1"/>
+                                    <geom class="collision_geom" type="box" pos="0.000689 -0.001629 0.012741" size="0.035524 0.042830 0.098219"/>
+                                    <inertial pos="-0.0007 0.0012 -0.1388" mass="1.70"
+                                              diaginertia="0.0043 0.0041 0.002"/>
+
+                                    <body name="link9l" pos="0 0.055 -0.228">
+                                        <joint name="left_arm4" type="hinge" axis="0 1 0" range="-1.989675 0.15708"/>
+                                        <geom class="visual_geom" type="mesh" mesh="left_arm4_visual" rgba="0.75 0.75 0.75 1"/>
+                                        <geom class="collision_geom" type="box" pos="0.000060 -0.000412 0.000088" size="0.033244 0.053138 0.051411"/>
+                                        <inertial pos="0 -0.0554 -0.0338" mass="0.47"
+                                                  diaginertia="0.0011 0.0008 0.0009"/>
+
+                                        <body name="link10l" pos="0 -0.055 -0.075">
+                                            <joint name="left_arm5" type="hinge" axis="0 0 -1" range="-2.792527 2.792527"/>
+                                            <geom class="visual_geom" type="mesh" mesh="left_arm5_visual" rgba="0.75 0.75 0.75 1"/>
+                                            <geom class="collision_geom" type="box" pos="0.000266 0.002035 -0.012022" size="0.030638 0.036583 0.097597"/>
+                                            <inertial pos="0 -0.002 -0.1024" mass="1.47"
+                                                      diaginertia="0.0016 0.0015 0.0009"/>
+
+                                            <body name="link11l" pos="0 -0.037 -0.245">
+                                                <joint name="left_arm6" type="hinge" axis="0 1 0" range="-1.047198 1.047198"/>
+                                                <geom class="visual_geom" type="mesh" mesh="left_arm6_visual" rgba="0.75 0.75 0.75 1"/>
+                                                <geom class="collision_geom" type="box" pos="-0.000198 0.004437 0.000628" size="0.026380 0.032623 0.031594"/>
+                                                <inertial pos="-0.0034 0.0364 0.0003" mass="0.63"
+                                                          diaginertia="0.0004 0.00036 0.00039"/>
+
+                                                <body name="link12l" pos="-0.0385 0.037 0" euler="-1.5708 0 0">
+                                                    <joint name="left_arm7" type="hinge" axis="-1 0 0" range="-1.570796 1.570796"/>
+                                                    <geom class="visual_geom" type="mesh" mesh="left_arm7_visual" rgba="0.75 0.75 0.75 1"/>
+                                                    <geom class="collision_geom" type="box" pos="-0.000332 0.003315 0.010292" size="0.022745 0.037583 0.049620"/>
+                                                    <inertial pos="0.0396 0.0517 0.0003" mass="0.24"
+                                                              diaginertia="0.00021 0.00017 0.00027"/>
+
+                                                    <!-- Fixed end effector links for left arm -->
+                                                    <body name="link13l" pos="0.0385 0.10772 0">
+                                                        <geom class="visual_geom" type="mesh" mesh="left_arm8_visual" rgba="0.87 0.87 0.89 1"/>
+                                                        <geom class="collision_geom" type="box" pos="0.000745 0.000026 -0.019274" size="0.011408 0.017442 0.045960"/>
+                                                        <inertial pos="0.0002 0.0086 0.0481" mass="0.13"
+                                                                  diaginertia="0.00007 0.00008 0.00003"/>
+                                                        <!-- Left arm IK end-effector frame marker (link12l-link13l contact / left_arm_link8 origin) -->
+                                                        <site name="left_ee" type="sphere" pos="0 0 0" size="0.012" rgba="1 0 0 1"/>
+                                                        <geom class="visual_geom" name="left_ee_marker" type="sphere" pos="0 0 0.03" size="0.014" rgba="1 0 0 1"/>
+
+                                                        <body name="link14l" pos="0 0.008 0">
+                                                            <geom class="visual_geom" type="mesh" mesh="left_arm9_visual" rgba="0.87 0.87 0.89 1"/>
+                                                            <geom class="collision_geom" type="box" pos="-0.000149 0.002321 -0.017551" size="0.017977 0.026244 0.045850"/>
+                                                            <inertial pos="0.0004 0.0145 -0.0008" mass="0.026"
+                                                                      diaginertia="0.000011 0.000019 0.000011"/>
+                                                        </body>
+
+                                                        <body name="link15l" pos="0 0.0127 0.0985" euler="0 0.4363 1.5708">
+                                                            <geom class="visual_geom" type="mesh" mesh="left_arm10_visual" rgba="1 0.78 0.98 1"/>
+                                                            <geom class="collision_geom" type="box" pos="0.005228 -0.000038 -0.000157" size="0.011167 0.012156 0.013461"/>
+                                                            <inertial pos="0.0116 0 0" mass="0.039"
+                                                                      diaginertia="0.000011 0.000007 0.000007"/>
+                                                        </body>
+                                                    </body>
+                                                </body>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+
+                        <!-- Right arm chain from link3 -->
+                        <body name="link6r" pos="0 -0.14 0.3872">
+                            <joint name="right_arm1" type="hinge" axis="0 -1 0" range="-1.570796 3.141593"/>
+                            <geom class="visual_geom" type="mesh" mesh="right_arm1_visual" rgba="0.75 0.75 0.75 1"/>
+                            <geom class="collision_geom" type="box" pos="-0.000096 -0.000867 -0.015482" size="0.039614 0.049356 0.060034"/>
+                            <inertial pos="0.0064 -0.0936 0.0003" mass="2.45"
+                                      diaginertia="0.0039 0.0036 0.0044"/>
+
+                            <body name="link7r" pos="0.063 -0.1 0">
+                                <joint name="right_arm2" type="hinge" axis="1 0 0" range="-1.37881 1.605703"/>
+                                <geom class="visual_geom" type="mesh" mesh="right_arm2_visual" rgba="0.75 0.75 0.75 1"/>
+                                <geom class="collision_geom" type="box" pos="0.004064 -0.008153 0.000768" size="0.046197 0.058995 0.063250"/>
+                                <inertial pos="-0.0602 -0.0405 -0.0002" mass="0.66"
+                                          diaginertia="0.0016 0.002 0.0022"/>
+
+                                <body name="link8r" pos="-0.063 -0.092 0" euler="-1.5708 0 0">
+                                    <joint name="right_arm3" type="hinge" axis="0 0 -1" range="-2.775074 2.775074"/>
+                                    <geom class="visual_geom" type="mesh" mesh="right_arm3_visual" rgba="0.75 0.75 0.75 1"/>
+                                    <geom class="collision_geom" type="box" pos="0.000696 0.000415 0.012654" size="0.035523 0.042672 0.098468"/>
+                                    <inertial pos="-0.0007 -0.001 -0.1388" mass="1.70"
+                                              diaginertia="0.0043 0.0041 0.002"/>
+
+                                    <body name="link9r" pos="0 -0.055 -0.228">
+                                        <joint name="right_arm4" type="hinge" axis="0 -1 0" range="-0.174533 1.989675"/>
+                                        <geom class="visual_geom" type="mesh" mesh="right_arm4_visual" rgba="0.75 0.75 0.75 1"/>
+                                        <geom class="collision_geom" type="box" pos="-0.000060 -0.000412 -0.000088" size="0.033244 0.053138 0.051411"/>
+                                        <inertial pos="0 0.0554 -0.0338" mass="0.47"
+                                                  diaginertia="0.0011 0.0008 0.0009"/>
+
+                                        <body name="link10r" pos="0 0.055 -0.075">
+                                            <joint name="right_arm5" type="hinge" axis="0 0 -1" range="-2.775074 2.775074"/>
+                                            <geom class="visual_geom" type="mesh" mesh="right_arm5_visual" rgba="0.75 0.75 0.75 1"/>
+                                            <geom class="collision_geom" type="box" pos="-0.000266 -0.002035 -0.012022" size="0.030638 0.036583 0.097597"/>
+                                            <inertial pos="0 0.002 -0.1024" mass="1.47"
+                                                      diaginertia="0.0016 0.0015 0.0009"/>
+
+                                            <body name="link11r" pos="0 0.037 -0.245">
+                                                <joint name="right_arm6" type="hinge" axis="0 -1 0" range="-1.047198 1.047198"/>
+                                                <geom class="visual_geom" type="mesh" mesh="right_arm6_visual" rgba="0.75 0.75 0.75 1"/>
+                                                <geom class="collision_geom" type="box" pos="-0.000177 0.004627 -0.000667" size="0.026606 0.032105 0.031050"/>
+                                                <inertial pos="-0.0034 -0.0364 0.0003" mass="0.63"
+                                                          diaginertia="0.0004 0.00036 0.00039"/>
+
+                                                <body name="link12r" pos="-0.0385 -0.037 0" euler="1.5708 0 0">
+                                                    <joint name="right_arm7" type="hinge" axis="-1 0 0" range="-1.570796 1.570796"/>
+                                                    <geom class="visual_geom" type="mesh" mesh="right_arm7_visual" rgba="0.75 0.75 0.75 1"/>
+                                                    <geom class="collision_geom" type="box" pos="0.000009 0.003830 -0.010008" size="0.022569 0.037851 0.049736"/>
+                                                    <inertial pos="0.0397 -0.0517 0.0003" mass="0.24"
+                                                              diaginertia="0.00021 0.00017 0.00027"/>
+
+                                                    <!-- Fixed end effector links for right arm -->
+                                                    <body name="link13r" pos="0.0385 -0.10772 0">
+                                                        <geom class="visual_geom" type="mesh" mesh="right_arm8_visual" rgba="0.87 0.87 0.89 1"/>
+                                                        <geom class="collision_geom" type="box" pos="-0.000745 -0.000026 -0.019274" size="0.011408 0.017442 0.045960"/>
+                                                        <inertial pos="-0.0002 -0.0086 0.0481" mass="0.13"
+                                                                  diaginertia="0.00007 0.00008 0.00003"/>
+                                                        <!-- Right arm IK end-effector frame marker (link12r-link13r contact / right_arm_link8 origin) -->
+                                                        <site name="right_ee" type="sphere" pos="0 0 0" size="0.012" rgba="0 0.5 1 1"/>
+                                                        <geom class="visual_geom" name="right_ee_marker" type="sphere" pos="0 0 0.03" size="0.014" rgba="0 0.5 1 1"/>
+
+                                                        <body name="link14r" pos="0 -0.008 0">
+                                                            <geom class="visual_geom" type="mesh" mesh="right_arm9_visual" rgba="0.87 0.87 0.89 1"/>
+                                                            <geom class="collision_geom" type="box" pos="0.000144 0.002314 0.017555" size="0.017977 0.026242 0.045849"/>
+                                                            <inertial pos="0.0004 -0.0145 0.0008" mass="0.026"
+                                                                      diaginertia="0.000011 0.000019 0.000011"/>
+                                                        </body>
+
+                                                        <body name="link15r" pos="0 -0.0127 0.0985" euler="0 0.4363 -1.5708">
+                                                            <geom class="visual_geom" type="mesh" mesh="right_arm10_visual" rgba="1 0.78 0.98 1"/>
+                                                            <geom class="collision_geom" type="box" pos="0.005228 -0.000038 -0.000157" size="0.011167 0.012156 0.013461"/>
+                                                            <inertial pos="0.0116 0 0" mass="0.039"
+                                                                      diaginertia="0.000011 0.000007 0.000007"/>
+                                                        </body>
+                                                    </body>
+                                                </body>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <contact>
+        <exclude body1="link0" body2="link1"/>
+        <exclude body1="link3" body2="link5"/>
+        <exclude body1="link10l" body2="link12l"/>
+        <exclude body1="link10r" body2="link12r"/>
+        <exclude body1="link1" body2="link3"/>
+        <exclude body1="link5" body2="link6l"/>
+        <exclude body1="link5" body2="link6r"/>
+        <exclude body1="link6l" body2="link8l"/>
+        <exclude body1="link6r" body2="link8r"/>
+    </contact>
+
+    <actuator>
+        <!-- Body actuators: higher stiffness, less overdamped -->
+        <position name="body3" joint="body3" kp="600" kv="1800" ctrllimited="true" ctrlrange="-2.094395 2.007129"/>
+        <position name="body2" joint="body2" kp="900" kv="2000" ctrllimited="true" ctrlrange="-2.007129 2.094395"/>
+        <position name="body1" joint="body1" kp="2200" kv="4000" ctrllimited="true" ctrlrange="-2.600541 2.600541"/>
+        <position name="hand2" joint="hand2" kp="800" kv="2000" ctrllimited="true" ctrlrange="-0.767945 0.767945"/>
+        <position name="hand1" joint="hand1" kp="1200" kv="2200" ctrllimited="true" ctrlrange="-2.775074 2.775074"/>
+
+        <!-- Left arm actuators: stronger to resist gravity -->
+        <position name="left_arm1" joint="left_arm1" kp="1500" kv="250" ctrllimited="true" ctrlrange="-3.141593 1.570796"/>
+        <position name="left_arm2" joint="left_arm2" kp="1500" kv="250" ctrllimited="true" ctrlrange="-1.605703 1.37881"/>
+        <position name="left_arm3" joint="left_arm3" kp="1200" kv="200" ctrllimited="true" ctrlrange="-2.792527 2.792527"/>
+        <position name="left_arm4" joint="left_arm4" kp="1200" kv="200" ctrllimited="true" ctrlrange="-1.989675 0.15708"/>
+        <position name="left_arm5" joint="left_arm5" kp="900" kv="150" ctrllimited="true" ctrlrange="-2.792527 2.792527"/>
+        <position name="left_arm6" joint="left_arm6" kp="900" kv="150" ctrllimited="true" ctrlrange="-1.047198 1.047198"/>
+        <position name="left_arm7" joint="left_arm7" kp="900" kv="150" ctrllimited="true" ctrlrange="-1.570796 1.570796"/>
+
+        <!-- Right arm actuators: stronger to resist gravity -->
+        <position name="right_arm1" joint="right_arm1" kp="1500" kv="250" ctrllimited="true" ctrlrange="-1.570796 3.141593"/>
+        <position name="right_arm2" joint="right_arm2" kp="1500" kv="250" ctrllimited="true" ctrlrange="-1.37881 1.605703"/>
+        <position name="right_arm3" joint="right_arm3" kp="1200" kv="200" ctrllimited="true" ctrlrange="-2.775074 2.775074"/>
+        <position name="right_arm4" joint="right_arm4" kp="1200" kv="200" ctrllimited="true" ctrlrange="-0.174533 1.989675"/>
+        <position name="right_arm5" joint="right_arm5" kp="900" kv="150" ctrllimited="true" ctrlrange="-2.775074 2.775074"/>
+        <position name="right_arm6" joint="right_arm6" kp="900" kv="150" ctrllimited="true" ctrlrange="-1.047198 1.047198"/>
+        <position name="right_arm7" joint="right_arm7" kp="900" kv="150" ctrllimited="true" ctrlrange="-1.570796 1.570796"/>
+    </actuator>
+
+    <sensor>
+        <!-- Joint position sensors -->
+        <jointpos name="pos_body3" joint="body3"/>
+        <jointpos name="pos_body2" joint="body2"/>
+        <jointpos name="pos_body1" joint="body1"/>
+        <jointpos name="pos_hand2" joint="hand2"/>
+        <jointpos name="pos_hand1" joint="hand1"/>
+
+        <jointpos name="pos_left_arm1" joint="left_arm1"/>
+        <jointpos name="pos_left_arm2" joint="left_arm2"/>
+        <jointpos name="pos_left_arm3" joint="left_arm3"/>
+        <jointpos name="pos_left_arm4" joint="left_arm4"/>
+        <jointpos name="pos_left_arm5" joint="left_arm5"/>
+        <jointpos name="pos_left_arm6" joint="left_arm6"/>
+        <jointpos name="pos_left_arm7" joint="left_arm7"/>
+
+        <jointpos name="pos_right_arm1" joint="right_arm1"/>
+        <jointpos name="pos_right_arm2" joint="right_arm2"/>
+        <jointpos name="pos_right_arm3" joint="right_arm3"/>
+        <jointpos name="pos_right_arm4" joint="right_arm4"/>
+        <jointpos name="pos_right_arm5" joint="right_arm5"/>
+        <jointpos name="pos_right_arm6" joint="right_arm6"/>
+        <jointpos name="pos_right_arm7" joint="right_arm7"/>
+
+        <!-- Joint velocity sensors -->
+        <jointvel name="vel_body3" joint="body3"/>
+        <jointvel name="vel_body2" joint="body2"/>
+        <jointvel name="vel_body1" joint="body1"/>
+        <jointvel name="vel_hand2" joint="hand2"/>
+        <jointvel name="vel_hand1" joint="hand1"/>
+
+        <jointvel name="vel_left_arm1" joint="left_arm1"/>
+        <jointvel name="vel_left_arm2" joint="left_arm2"/>
+        <jointvel name="vel_left_arm3" joint="left_arm3"/>
+        <jointvel name="vel_left_arm4" joint="left_arm4"/>
+        <jointvel name="vel_left_arm5" joint="left_arm5"/>
+        <jointvel name="vel_left_arm6" joint="left_arm6"/>
+        <jointvel name="vel_left_arm7" joint="left_arm7"/>
+
+        <jointvel name="vel_right_arm1" joint="right_arm1"/>
+        <jointvel name="vel_right_arm2" joint="right_arm2"/>
+        <jointvel name="vel_right_arm3" joint="right_arm3"/>
+        <jointvel name="vel_right_arm4" joint="right_arm4"/>
+        <jointvel name="vel_right_arm5" joint="right_arm5"/>
+        <jointvel name="vel_right_arm6" joint="right_arm6"/>
+        <jointvel name="vel_right_arm7" joint="right_arm7"/>
+
+        <!-- End effector frame sensors -->
+        <framepos name="left_ee_pos" objtype="site" objname="left_ee"/>
+        <framequat name="left_ee_quat" objtype="site" objname="left_ee"/>
+        <framepos name="right_ee_pos" objtype="site" objname="right_ee"/>
+        <framequat name="right_ee_quat" objtype="site" objname="right_ee"/>
+    </sensor>
+</mujoco>

@@ -1,0 +1,14 @@
+.venv*/
+.git-real/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+light_teleop/light_teleop/logs/

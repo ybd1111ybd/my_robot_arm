@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "light-teleop"
+version = "0.1.0"
+description = "Lightweight teleoperation utilities for the JZ robot"
+requires-python = ">=3.10"
+dependencies = [
+  "pin-pink",
+  "numpy",
+  "meshcat",
+  "meshcat-shapes",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]

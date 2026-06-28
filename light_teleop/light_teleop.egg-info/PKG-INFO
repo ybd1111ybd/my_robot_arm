@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: light-teleop
+Version: 0.1.0
+Summary: Lightweight teleoperation utilities for the JZ robot
+Requires-Python: >=3.10
+Requires-Dist: pin-pink
+Requires-Dist: numpy
+Requires-Dist: meshcat
+Requires-Dist: meshcat-shapes
