@@ -49,6 +49,8 @@ NON_ARM_DELTA_LIMIT = 1e-8
 LIMIT_TOLERANCE = 1e-6
 SLIDER_MODE = "sliders"
 ARC_MODE = "arc"
+POSTURE_HOME_BIAS_FULL_ERROR = 0.005
+POSTURE_HOME_BIAS_DISABLE_ERROR = 0.05
 
 PREGRASP_JOINT_POSITIONS = {
     "left_joint1": -0.30,
@@ -237,7 +239,7 @@ class PinkTeleopSolver:
         solver: str | None = None,
         posture_cost: float = 1e-3,
         home_name: str = HOME_NEUTRAL,
-        posture_current_ratio: float = 0.85,
+        posture_current_ratio: float = 0.98,
         joint_motion_cost: float = 0.0,
     ) -> None:
         self.robot = robot
@@ -349,10 +351,8 @@ class PinkTeleopSolver:
         if dt <= 0.0 or not math.isfinite(dt):
             raise ValueError(f"invalid dt: {dt}")
 
-        posture_target = (
-            self.posture_current_ratio * self.configuration.q
-            + (1.0 - self.posture_current_ratio) * self.q0_reduced
-        )
+        home_ratio = self._dynamic_posture_home_ratio()
+        posture_target = (1.0 - home_ratio) * self.configuration.q + home_ratio * self.q0_reduced
         self.posture_task.set_target(posture_target)
         self.motion_task.set_target(self.configuration.q)
 
@@ -373,6 +373,28 @@ class PinkTeleopSolver:
         self.configuration.integrate_inplace(velocity, dt)
         self._validate_configuration()
         return self._make_result()
+
+    def _dynamic_posture_home_ratio(self) -> float:
+        """Return a small home bias only when end-effector tracking is close."""
+
+        max_home_ratio = 1.0 - self.posture_current_ratio
+        if max_home_ratio <= 0.0:
+            return 0.0
+
+        left_pose, right_pose = self.get_current_ee_poses()
+        error = max(
+            position_error(left_pose, self.left_target),
+            position_error(right_pose, self.right_target),
+        )
+        if error >= POSTURE_HOME_BIAS_DISABLE_ERROR:
+            return 0.0
+        if error <= POSTURE_HOME_BIAS_FULL_ERROR:
+            return max_home_ratio
+
+        scale = (POSTURE_HOME_BIAS_DISABLE_ERROR - error) / (
+            POSTURE_HOME_BIAS_DISABLE_ERROR - POSTURE_HOME_BIAS_FULL_ERROR
+        )
+        return float(np.clip(max_home_ratio * scale, 0.0, max_home_ratio))
 
     def _validate_configuration(self) -> None:
         if not np.all(np.isfinite(self.configuration.q)):

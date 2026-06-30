@@ -735,7 +735,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--print-every", type=int, default=30)
     parser.add_argument("--open-browser", action="store_true")
     parser.add_argument("--no-meshes", action="store_true")
-    parser.add_argument("--arm-meshes-only", action="store_true")
+    parser.add_argument("--arm-meshes-only", action=argparse.BooleanOptionalAction)
     parser.add_argument(
         "--show-vr-debug",
         action=argparse.BooleanOptionalAction,
@@ -928,11 +928,14 @@ def main(argv: list[str] | None = None) -> int:
     vr_debug_origin = np.array(args.vr_debug_origin, dtype=float)
     joint_motion_stats = JointMotionStats()
     last_arm_q = solver.configuration.q.copy()
+    reset_requested = False
 
     def reset_home_targets() -> None:
+        nonlocal reset_requested
         nonlocal left_mapped_target, right_mapped_target, left_target, right_target
         nonlocal left_mapped_tcp_target, right_mapped_tcp_target, left_tcp_target, right_tcp_target
         nonlocal last_left_target, last_right_target, last_arm_q
+        reset_requested = True
         solver.configuration.update(solver.q0_reduced)
         solver.posture_task.set_target(solver.q0_reduced)
         solver.motion_task.set_target(solver.configuration.q)
@@ -1048,34 +1051,36 @@ def main(argv: list[str] | None = None) -> int:
                             warning_logger=lambda message: log(f"[vr_visual_demo] warning: {message}"),
                             primary_press_callback=reset_home_targets,
                         )
-                        left_mapped_target = ee_pose_to_se3(
-                            left_transformer.transform(smoothed.left_position, smoothed.left_rotation)
-                        )
-                        right_mapped_target = ee_pose_to_se3(
-                            right_transformer.transform(smoothed.right_position, smoothed.right_rotation)
-                        )
-                        left_mapped_target = apply_target_orientation_mode(
-                            left_mapped_target,
-                            left_transformer,
-                            args.target_orientation_mode,
-                            args.wrist_left_right_gain,
-                            args.wrist_up_down_gain,
-                            args.wrist_max_angle,
-                        )
-                        right_mapped_target = apply_target_orientation_mode(
-                            right_mapped_target,
-                            right_transformer,
-                            args.target_orientation_mode,
-                            args.wrist_left_right_gain,
-                            args.wrist_up_down_gain,
-                            args.wrist_max_angle,
-                        )
-                        left_mapped_tcp_target = left_mapped_target.copy()
-                        right_mapped_tcp_target = right_mapped_target.copy()
-                        left_mapped_target = tcp_control_to_frame_target(left_mapped_tcp_target, tcp_control_offset)
-                        right_mapped_target = tcp_control_to_frame_target(right_mapped_tcp_target, tcp_control_offset)
-                        left_target = left_mapped_target.copy()
-                        right_target = right_mapped_target.copy()
+                        if not reset_requested:
+                            left_mapped_target = ee_pose_to_se3(
+                                left_transformer.transform(smoothed.left_position, smoothed.left_rotation)
+                            )
+                            right_mapped_target = ee_pose_to_se3(
+                                right_transformer.transform(smoothed.right_position, smoothed.right_rotation)
+                            )
+                            left_mapped_target = apply_target_orientation_mode(
+                                left_mapped_target,
+                                left_transformer,
+                                args.target_orientation_mode,
+                                args.wrist_left_right_gain,
+                                args.wrist_up_down_gain,
+                                args.wrist_max_angle,
+                            )
+                            right_mapped_target = apply_target_orientation_mode(
+                                right_mapped_target,
+                                right_transformer,
+                                args.target_orientation_mode,
+                                args.wrist_left_right_gain,
+                                args.wrist_up_down_gain,
+                                args.wrist_max_angle,
+                            )
+                            left_mapped_tcp_target = left_mapped_target.copy()
+                            right_mapped_tcp_target = right_mapped_target.copy()
+                            left_mapped_target = tcp_control_to_frame_target(left_mapped_tcp_target, tcp_control_offset)
+                            right_mapped_target = tcp_control_to_frame_target(right_mapped_tcp_target, tcp_control_offset)
+                            left_target = left_mapped_target.copy()
+                            right_target = right_mapped_target.copy()
+                        reset_requested = False
 
                 if args.target_max_speed > 0.0:
                     max_step = args.target_max_speed * dt
